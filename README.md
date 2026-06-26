@@ -138,7 +138,7 @@ sequenceDiagram
     Channel-->>AppB: 弹出登录失效模态框
     end
 
-    rect rgba(101, 199, 255, 1)
+    rect rgba(101, 129, 255, 1)
     Note over User,Channel: 阶段三：重新登录与状态恢复
     User->>AppA: 点击"确认重新登录"
     AppA->>Auth: 跳转 /auth/login?redirect_url=app-a-url
