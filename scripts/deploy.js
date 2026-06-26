@@ -68,6 +68,15 @@ function copyToDist(appName) {
   }
 }
 
+function generateCNAME() {
+  const CUSTOM_DOMAIN = process.env.CUSTOM_DOMAIN || '';
+  if (CUSTOM_DOMAIN) {
+    const cnamePath = path.join(DEPLOY_TARGET, 'CNAME');
+    fs.writeFileSync(cnamePath, CUSTOM_DOMAIN);
+    console.log(`✅ 生成 CNAME 文件 -> ${CUSTOM_DOMAIN}`);
+  }
+}
+
 function generateRedirects() {
   const rootIndex = path.join(DEPLOY_TARGET, 'index.html');
   
@@ -139,6 +148,7 @@ if (appArg && APPS.includes(appArg)) {
 } else {
   APPS.forEach(buildApp);
   APPS.forEach(copyToDist);
+  generateCNAME();
   generateRedirects();
   console.log('\n🎉 所有应用部署完成！');
   console.log(`📁 部署目录: ${DEPLOY_TARGET}`);
