@@ -6,3 +6,6 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
+
+declare const __REPO_NAME__: string;
+declare const __BASE_PATH__: string;

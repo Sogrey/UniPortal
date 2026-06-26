@@ -18,8 +18,10 @@ const routes: RouteRecordRaw[] = [
   },
 ];
 
+const routerBase = __REPO_NAME__ ? `/${__REPO_NAME__}${__BASE_PATH__}` : __BASE_PATH__;
+
 const router = createRouter({
-  history: createWebHistory('/app-b/'),
+  history: createWebHistory(routerBase),
   routes,
 });
 

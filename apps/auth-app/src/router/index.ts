@@ -27,8 +27,10 @@ const routes: RouteRecordRaw[] = [
  * 使用 HTML5 History 模式，基础路径为 /auth/
  * @type {import('vue-router').Router}
  */
+const routerBase = __REPO_NAME__ ? `/${__REPO_NAME__}${__BASE_PATH__}` : __BASE_PATH__;
+
 const router = createRouter({
-  history: createWebHistory('/auth/'),
+  history: createWebHistory(routerBase),
   routes,
 });
 
