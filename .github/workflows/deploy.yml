@@ -36,14 +36,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Build all apps
-        run: pnpm build:prod
-        env:
-          REPO_NAME: ${{ github.event.repository.name }}
-
       - name: Run deployment script
         run: node scripts/deploy.js
         env:
+          REPO_NAME: ${{ github.event.repository.name }}
           CUSTOM_DOMAIN: sogrey.top
 
       - name: Upload artifact
