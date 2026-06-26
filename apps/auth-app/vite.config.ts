@@ -2,11 +2,25 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { resolve } from 'path';
 
-const BASE_URL = process.env.DEPLOY_BASE || '/auth/';
+const REPO_NAME = process.env.REPO_NAME || '';
+const BASE_PATH = process.env.DEPLOY_BASE || '/auth/';
+const BASE_URL = REPO_NAME ? `/${REPO_NAME}${BASE_PATH}` : BASE_PATH;
 
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    {
+      name: 'transform-index-html',
+      transformIndexHtml(html) {
+        return html.replace(/href="vite\.svg"/g, `href="${BASE_URL}vite.svg"`);
+      },
+    },
+  ],
   base: BASE_URL,
+  define: {
+    __REPO_NAME__: JSON.stringify(REPO_NAME),
+    __BASE_PATH__: JSON.stringify(BASE_PATH),
+  },
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src'),
