@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UniPortal - 统一门户</title>
+  <meta http-equiv="refresh" content="0; url=/UniPortal/auth/" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    }
+    .container {
+      text-align: center;
+      color: white;
+      padding: 40px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+    .logo {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+    .title {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .subtitle {
+      font-size: 14px;
+      opacity: 0.8;
+      margin-bottom: 30px;
+    }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .link {
+      color: white;
+      text-decoration: underline;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">🚀</div>
+    <div class="title">UniPortal</div>
+    <div class="subtitle">统一门户系统</div>
+    <div class="spinner"></div>
+    <div>正在跳转到主门户...</div>
+    <div style="margin-top: 10px;">
+      如果没有自动跳转，请点击 <a href="/UniPortal/auth/" class="link">这里</a>
+    </div>
+  </div>
+  <script>
+    window.location.href = '/UniPortal/auth/';
+  </script>
+</body>
+</html>
