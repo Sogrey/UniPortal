@@ -1,0 +1,70 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: 'pages'
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org/
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build all apps
+        run: pnpm build:prod
+        env:
+          REPO_NAME: ${{ github.event.repository.name }}
+
+      - name: Create deploy directory
+        run: mkdir -p dist
+
+      - name: Copy auth-app to dist/auth
+        run: cp -r apps/auth-app/dist dist/auth
+
+      - name: Copy business-app-a to dist/app-a
+        run: cp -r apps/business-app-a/dist dist/app-a
+
+      - name: Copy business-app-b to dist/app-b
+        run: cp -r apps/business-app-b/dist dist/app-b
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
