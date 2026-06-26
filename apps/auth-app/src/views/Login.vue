@@ -5,11 +5,19 @@ import { authStorage, authChannel, AuthAction, parseRedirectParams } from '@my-m
 
 const router = useRouter();
 
+/** 用户名输入 */
 const username = ref('');
+/** 密码输入 */
 const password = ref('');
+/** 登录加载状态 */
 const loading = ref(false);
+/** 错误提示信息 */
 const error = ref('');
 
+/**
+ * 处理登录提交
+ * 验证表单、模拟登录请求、存储认证信息、广播登录事件、处理重定向
+ */
 const handleLogin = async () => {
   if (!username.value || !password.value) {
     error.value = '请输入用户名和密码';
@@ -33,6 +41,7 @@ const handleLogin = async () => {
     
     authStorage.setToken(mockToken);
     authStorage.setUser(mockUser);
+    
     authChannel.broadcast(AuthAction.LOGIN, { user: mockUser, token: mockToken });
     
     const { redirectUrl, returnTo } = parseRedirectParams();
@@ -54,6 +63,10 @@ const handleLogin = async () => {
 let unlisten: () => void;
 
 onMounted(() => {
+  /**
+   * 监听其他页面的登录事件
+   * 如果其他页签已登录，自动跳转首页
+   */
   unlisten = authChannel.onMessage((msg) => {
     if (msg.action === AuthAction.LOGIN) {
       router.push('/');

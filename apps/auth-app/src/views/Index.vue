@@ -1,49 +1,55 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { authStorage, authChannel, AuthAction } from '@my-monorepo/shared';
+import { useAuth, authStorage, authChannel, AuthAction } from '@my-monorepo/shared';
 
 const router = useRouter();
 
-const user = ref(authStorage.getUser());
-const token = ref(authStorage.getToken());
-const isAuthenticated = ref(authStorage.getState().isAuthenticated);
+/**
+ * 使用登录状态管理 Composable
+ * 自动监听认证事件并同步更新用户状态
+ * @param {Object} options - 回调配置
+ * @param {Function} options.onLogin - 登录成功回调
+ * @param {Function} options.onLogout - 登出成功回调
+ * @param {Function} options.onSessionExpired - 会话过期回调
+ */
+const { user, token, isAuthenticated } = useAuth({
+  onLogin: () => {
+    router.push('/');
+  },
+  onLogout: () => {
+    router.push('/login');
+  },
+  onSessionExpired: () => {
+    router.push('/login');
+  },
+});
 
+/**
+ * 业务应用列表
+ * 配置应用名称、路径和图标
+ */
 const apps = [
   { name: '业务应用 A', path: '/app-a/', icon: '📊' },
   { name: '业务应用 B', path: '/app-b/', icon: '⚙️' },
 ];
 
+/**
+ * 处理退出登录
+ * 清除本地存储、广播登出事件、跳转登录页
+ */
 const handleLogout = () => {
   authStorage.clear();
   authChannel.broadcast(AuthAction.LOGOUT, {});
   router.push('/login');
 };
 
+/**
+ * 在新标签页打开业务应用
+ * @param {string} path - 应用路径
+ */
 const goToApp = (path: string) => {
   window.open(path, '_blank');
 };
-
-let unlisten: () => void;
-
-onMounted(() => {
-  unlisten = authChannel.onMessage((msg) => {
-    if (msg.action === AuthAction.LOGOUT || msg.action === AuthAction.SESSION_EXPIRED) {
-      isAuthenticated.value = false;
-      router.push('/login');
-    } else if (msg.action === AuthAction.LOGIN) {
-      user.value = authStorage.getUser();
-      token.value = authStorage.getToken();
-      isAuthenticated.value = true;
-    } else if (msg.action === AuthAction.USER_CHANGED) {
-      user.value = authStorage.getUser();
-    }
-  });
-});
-
-onUnmounted(() => {
-  unlisten?.();
-});
 </script>
 
 <template>
