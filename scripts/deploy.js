@@ -145,15 +145,25 @@ function generateRedirects() {
   console.log(`✅ 生成根目录重定向页面 -> ${authBasePath}`);
 }
 
+function cleanDist() {
+  if (fs.existsSync(DEPLOY_TARGET)) {
+    fs.rmSync(DEPLOY_TARGET, { recursive: true });
+    console.log('🧹 清理 dist 目录');
+  }
+  fs.mkdirSync(DEPLOY_TARGET, { recursive: true });
+}
+
 const appArg = process.argv[2];
 if (appArg && APPS.includes(appArg)) {
   buildApp(appArg);
   copyToDist(appArg);
 } else {
+  cleanDist();
   APPS.forEach(buildApp);
   APPS.forEach(copyToDist);
   generateCNAME();
   generateRedirects();
   console.log('\n🎉 所有应用部署完成！');
   console.log(`📁 部署目录: ${DEPLOY_TARGET}`);
+  console.log(`🔧 REPO_NAME: "${REPO_NAME}"`);
 }
