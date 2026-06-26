@@ -18,7 +18,9 @@ const routes: RouteRecordRaw[] = [
   },
 ];
 
-const routerBase = __REPO_NAME__ ? `/${__REPO_NAME__}${__BASE_PATH__}` : __BASE_PATH__;
+const repoName = import.meta.env.VITE_REPO_NAME || '';
+const basePath = import.meta.env.VITE_BASE_PATH || '/app-a/';
+const routerBase = repoName ? `/${repoName}${basePath}` : basePath;
 
 const router = createRouter({
   history: createWebHistory(routerBase),

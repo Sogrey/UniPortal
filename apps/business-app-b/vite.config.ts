@@ -18,8 +18,8 @@ export default defineConfig({
   ],
   base: BASE_URL,
   define: {
-    __REPO_NAME__: JSON.stringify(REPO_NAME),
-    __BASE_PATH__: JSON.stringify(BASE_PATH),
+    'import.meta.env.VITE_REPO_NAME': JSON.stringify(REPO_NAME),
+    'import.meta.env.VITE_BASE_PATH': JSON.stringify(BASE_PATH),
   },
   resolve: {
     alias: {

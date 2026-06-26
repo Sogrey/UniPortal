@@ -29,7 +29,7 @@ export const RETURN_TO_PARAM = 'return_to';
  * // 返回: '/auth/login?return_to=%2Fdashboard'
  */
 const getAuthBasePath = (): string => {
-  const repoName = (window as any).__REPO_NAME__ || '';
+  const repoName = (window as any).__VITE_REPO_NAME__ || '';
   const basePath = '/auth/';
   return repoName ? `/${repoName}${basePath}` : basePath;
 };
