@@ -28,7 +28,14 @@ export const RETURN_TO_PARAM = 'return_to';
  * buildLoginUrl(undefined, '/dashboard')
  * // 返回: '/auth/login?return_to=%2Fdashboard'
  */
+const getAuthBasePath = (): string => {
+  const repoName = (window as any).__REPO_NAME__ || '';
+  const basePath = '/auth/';
+  return repoName ? `/${repoName}${basePath}` : basePath;
+};
+
 export function buildLoginUrl(redirectUrl?: string, returnTo?: string): string {
+  const authBase = getAuthBasePath();
   const params: string[] = [];
   
   if (redirectUrl) {
@@ -40,10 +47,10 @@ export function buildLoginUrl(redirectUrl?: string, returnTo?: string): string {
   }
   
   if (params.length === 0) {
-    return '/auth/login';
+    return `${authBase}login`;
   }
   
-  return `/auth/login?${params.join('&')}`;
+  return `${authBase}login?${params.join('&')}`;
 }
 
 /**
