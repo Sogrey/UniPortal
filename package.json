@@ -1,0 +1,26 @@
+{
+  "name": "@my-monorepo/root",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"pnpm --filter auth-app dev\" \"pnpm --filter business-app-a dev\" \"pnpm --filter business-app-b dev\"",
+    "dev:auth": "pnpm --filter auth-app dev",
+    "dev:app-a": "pnpm --filter business-app-a dev",
+    "dev:app-b": "pnpm --filter business-app-b dev",
+    "build": "pnpm -r build",
+    "build:prod": "pnpm -r build --mode production",
+    "preview": "pnpm -r preview",
+    "deploy": "pnpm build:prod && node scripts/deploy.js",
+    "deploy:auth": "pnpm --filter auth-app build:prod && node scripts/deploy.js auth-app",
+    "lint": "pnpm -r lint",
+    "type-check": "pnpm -r type-check"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "concurrently": "^10.0.3",
+    "typescript": "^5.4.0",
+    "vite": "^5.2.0",
+    "vue-tsc": "^2.0.0"
+  }
+}
