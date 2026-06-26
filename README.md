@@ -117,7 +117,7 @@ sequenceDiagram
     participant AppB as 子系统 B
     participant Channel as BroadcastChannel
 
-    rect rgb(230, 245, 255)
+    rect rgba(61, 61, 61, 1)
     Note over User,Channel: 阶段一：初始认证
     User->>Auth: 访问 /auth/login
     User->>Auth: 输入用户名密码
@@ -128,7 +128,7 @@ sequenceDiagram
     Channel-->>AppB: 更新用户状态
     end
 
-    rect rgb(255, 230, 230)
+    rect rgba(255, 125, 125, 1)
     Note over User,Channel: 阶段二：登录失效（任意页面退出或 Token 过期）
     User->>Auth: 点击退出登录 / API 返回 401
     Auth->>Auth: authStorage.clear()
@@ -138,7 +138,7 @@ sequenceDiagram
     Channel-->>AppB: 弹出登录失效模态框
     end
 
-    rect rgb(230, 255, 230)
+    rect rgba(101, 199, 255, 1)
     Note over User,Channel: 阶段三：重新登录与状态恢复
     User->>AppA: 点击"确认重新登录"
     AppA->>Auth: 跳转 /auth/login?redirect_url=app-a-url
