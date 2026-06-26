@@ -28,7 +28,7 @@ router.beforeEach((to, _from, next) => {
   
   if (to.meta.requiresAuth && !isAuthenticated) {
     const loginUrl = buildLoginUrl(window.location.href);
-    window.open(loginUrl, '_blank');
+    window.location.href = loginUrl;
     next(false);
   } else {
     next();

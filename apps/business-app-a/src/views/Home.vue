@@ -1,32 +1,28 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
-import { authStorage, authChannel, AuthAction } from '@my-monorepo/shared';
+import { useAuth, authStorage, authChannel, AuthAction } from '@my-monorepo/shared';
 
-const user = ref(authStorage.getUser());
+/**
+ * 使用登录状态管理 Composable
+ * 自动监听认证事件并同步更新用户状态
+ */
+const { user } = useAuth();
 
+/**
+ * 处理退出登录
+ * 清除本地存储、广播登出事件、跳转到主门户登录页
+ */
 const handleLogout = () => {
   authStorage.clear();
   authChannel.broadcast(AuthAction.LOGOUT, { reason: 'User logged out' });
   window.location.href = '/auth/login';
 };
 
+/**
+ * 跳转到业务应用 B
+ */
 const goToAppB = () => {
   window.location.href = '/app-b/';
 };
-
-let unlisten: () => void;
-
-onMounted(() => {
-  unlisten = authChannel.onMessage((msg) => {
-    if (msg.action === AuthAction.LOGIN) {
-      user.value = authStorage.getUser();
-    }
-  });
-});
-
-onUnmounted(() => {
-  unlisten?.();
-});
 </script>
 
 <template>

@@ -1,41 +1,23 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue';
-import { authChannel, authStorage, AuthAction, buildLoginUrl } from '@my-monorepo/shared';
+import { useAuthModal, buildLoginUrl } from '@my-monorepo/shared';
 
-const showModal = ref(false);
-const modalMessage = ref('');
+/**
+ * 使用认证模态框 Composable
+ * 自动监听 LOGOUT 和 SESSION_EXPIRED 事件显示登录失效弹窗
+ * 监听 LOGIN 事件自动关闭弹窗
+ */
+const { showModal, modalMessage } = useAuthModal();
 
-const handleAuthMessage = (msg: { action: AuthAction; payload?: { reason?: string } }) => {
-  if (msg.action === AuthAction.LOGOUT || msg.action === AuthAction.SESSION_EXPIRED) {
-    authStorage.clear();
-    modalMessage.value = msg.action === AuthAction.LOGOUT 
-      ? '您的账号已在其他地方登出，请重新登录' 
-      : '登录已过期，请重新登录';
-    showModal.value = true;
-  } else if (msg.action === AuthAction.LOGIN) {
-    if (showModal.value) {
-      showModal.value = false;
-      window.location.reload();
-    }
-  }
-};
-
+/**
+ * 处理弹窗确认按钮点击
+ * 关闭弹窗并跳转到主门户登录页面，携带当前完整 URL 作为重定向参数
+ */
 const handleConfirm = () => {
   showModal.value = false;
   const currentUrl = window.location.href;
   const loginUrl = buildLoginUrl(currentUrl);
   window.location.href = loginUrl;
 };
-
-let unlisten: () => void;
-
-onMounted(() => {
-  unlisten = authChannel.onMessage(handleAuthMessage);
-});
-
-onUnmounted(() => {
-  unlisten?.();
-});
 </script>
 
 <template>
