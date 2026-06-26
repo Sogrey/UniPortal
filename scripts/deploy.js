@@ -39,7 +39,10 @@ function buildApp(appName) {
 function copyToDist(appName) {
   const appDir = path.join(rootDir, 'apps', appName);
   const distDir = path.join(appDir, 'dist');
-  const targetDir = path.join(DEPLOY_TARGET, DEPLOY_PATHS[appName].replace(/^\//, ''));
+  const deployPath = DEPLOY_PATHS[appName].replace(/^\//, '');
+  const targetDir = REPO_NAME 
+    ? path.join(DEPLOY_TARGET, REPO_NAME, deployPath)
+    : path.join(DEPLOY_TARGET, deployPath);
 
   if (!fs.existsSync(distDir)) {
     console.error(`❌ ${appName} 构建产物不存在`);
@@ -79,6 +82,7 @@ function generateCNAME() {
 
 function generateRedirects() {
   const rootIndex = path.join(DEPLOY_TARGET, 'index.html');
+  const authBasePath = REPO_NAME ? `/${REPO_NAME}/auth/` : '/auth/';
   
   const html = `<!DOCTYPE html>
 <html lang="zh-CN">
@@ -86,7 +90,7 @@ function generateRedirects() {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>UniPortal - 统一门户</title>
-  <meta http-equiv="refresh" content="0; url=/UniPortal/auth/" />
+  <meta http-equiv="refresh" content="0; url=${authBasePath}" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -130,15 +134,15 @@ function generateRedirects() {
     <div class="spinner"></div>
     <div>正在跳转...</div>
     <div style="margin-top: 10px;">
-      如果没有自动跳转，请点击 <a href="/UniPortal/auth/" class="link">这里</a>
+      如果没有自动跳转，请点击 <a href="${authBasePath}" class="link">这里</a>
     </div>
   </div>
-  <script>window.location.href = '/UniPortal/auth/';</script>
+  <script>window.location.href = '${authBasePath}';</script>
 </body>
 </html>`;
   
   fs.writeFileSync(rootIndex, html);
-  console.log('✅ 生成根目录重定向页面 -> /UniPortal/auth/');
+  console.log(`✅ 生成根目录重定向页面 -> ${authBasePath}`);
 }
 
 const appArg = process.argv[2];
