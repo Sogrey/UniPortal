@@ -40,9 +40,7 @@ function copyToDist(appName) {
   const appDir = path.join(rootDir, 'apps', appName);
   const distDir = path.join(appDir, 'dist');
   const deployPath = DEPLOY_PATHS[appName].replace(/^\//, '');
-  const targetDir = REPO_NAME 
-    ? path.join(DEPLOY_TARGET, REPO_NAME, deployPath)
-    : path.join(DEPLOY_TARGET, deployPath);
+  const targetDir = path.join(DEPLOY_TARGET, deployPath);
 
   if (!fs.existsSync(distDir)) {
     console.error(`❌ ${appName} 构建产物不存在`);

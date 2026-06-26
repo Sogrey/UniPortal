@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/auth/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>认证中心</title>
+    <script type="module" crossorigin src="/auth/assets/index-a2GFm69S.js"></script>
+    <link rel="modulepreload" crossorigin href="/auth/assets/vue-vendor-DRX6LhrC.js">
+    <link rel="stylesheet" crossorigin href="/auth/assets/index-B7oV_ItI.css">
+  </head>
+  <body>
+    <div id="app"></div>
+  </body>
+</html>
