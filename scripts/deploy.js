@@ -62,13 +62,6 @@ function copyToDist(appName) {
       execSync(`cp -r ${distDir}/* ${targetDir}`, { stdio: 'inherit' });
     }
     
-    const indexHtml = path.join(targetDir, 'index.html');
-    const notFoundHtml = path.join(targetDir, '404.html');
-    if (fs.existsSync(indexHtml)) {
-      fs.copyFileSync(indexHtml, notFoundHtml);
-      console.log(`📄 生成 404.html（支持 SPA history 模式）`);
-    }
-    
     console.log(`✅ ${appName} 复制完成`);
     return true;
   } catch (error) {
@@ -151,6 +144,86 @@ function generateRedirects() {
   console.log(`✅ 生成根目录重定向页面 -> ${authBasePath}`);
 }
 
+function generateRoot404() {
+  const notFoundPath = path.join(DEPLOY_TARGET, '404.html');
+  const authBasePath = REPO_NAME ? `/${REPO_NAME}/auth/` : '/auth/';
+  const appABasePath = REPO_NAME ? `/${REPO_NAME}/app-a/` : '/app-a/';
+  const appBBasePath = REPO_NAME ? `/${REPO_NAME}/app-b/` : '/app-b/';
+  
+  const html = `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>404 - UniPortal</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    }
+    .container {
+      text-align: center;
+      color: white;
+      padding: 40px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+    .logo { font-size: 48px; margin-bottom: 20px; }
+    .title { font-size: 28px; font-weight: 600; margin-bottom: 10px; }
+    .subtitle { font-size: 14px; opacity: 0.8; margin-bottom: 30px; }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">🔄</div>
+    <div class="title">正在重定向...</div>
+    <div class="spinner"></div>
+    <div class="subtitle">请稍候，正在加载应用...</div>
+  </div>
+  <script>
+    (function() {
+      var path = window.location.pathname;
+      var search = window.location.search;
+      var hash = window.location.hash;
+      var redirectPath = path + search + hash;
+      
+      sessionStorage.setItem('UniPortal.redirect', redirectPath);
+      
+      if (path.indexOf('/auth/') !== -1) {
+        window.location.replace('${authBasePath}');
+      } else if (path.indexOf('/app-a/') !== -1) {
+        window.location.replace('${appABasePath}');
+      } else if (path.indexOf('/app-b/') !== -1) {
+        window.location.replace('${appBBasePath}');
+      } else {
+        window.location.replace('${authBasePath}');
+      }
+    })();
+  </script>
+</body>
+</html>`;
+  
+  fs.writeFileSync(notFoundPath, html);
+  console.log(`✅ 生成根目录 404.html（支持 SPA history 模式）`);
+}
+
 function cleanDist() {
   if (fs.existsSync(DEPLOY_TARGET)) {
     fs.rmSync(DEPLOY_TARGET, { recursive: true });
@@ -169,6 +242,7 @@ if (appArg && APPS.includes(appArg)) {
   APPS.forEach(copyToDist);
   generateCNAME();
   generateRedirects();
+  generateRoot404();
   console.log('\n🎉 所有应用部署完成！');
   console.log(`📁 部署目录: ${DEPLOY_TARGET}`);
   console.log(`🔧 REPO_NAME: "${REPO_NAME}"`);
