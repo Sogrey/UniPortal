@@ -79,3 +79,11 @@ export function parseRedirectParams(): { redirectUrl?: string; returnTo?: string
     returnTo: returnTo || undefined,
   };
 }
+
+export function buildAppPath(appPath: string): string {
+  const repoName = (window as any).__VITE_REPO_NAME__ || '';
+  if (repoName) {
+    return `/${repoName}${appPath}`;
+  }
+  return appPath;
+}

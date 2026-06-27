@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
-import { useAuth, authStorage, authChannel, AuthAction } from '@my-monorepo/shared';
+import { useAuth, authStorage, authChannel, AuthAction, buildAppPath } from '@my-monorepo/shared';
 
 const router = useRouter();
 
@@ -48,7 +48,7 @@ const handleLogout = () => {
  * @param {string} path - 应用路径
  */
 const goToApp = (path: string) => {
-  window.open(path, '_blank');
+  window.open(buildAppPath(path), '_blank');
 };
 </script>
 

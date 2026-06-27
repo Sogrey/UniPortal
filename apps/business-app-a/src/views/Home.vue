@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAuth, authStorage, authChannel, AuthAction } from '@my-monorepo/shared';
+import { useAuth, authStorage, authChannel, AuthAction, buildAppPath } from '@my-monorepo/shared';
 
 /**
  * 使用登录状态管理 Composable
@@ -14,14 +14,14 @@ const { user } = useAuth();
 const handleLogout = () => {
   authStorage.clear();
   authChannel.broadcast(AuthAction.LOGOUT, { reason: 'User logged out' });
-  window.location.href = '/auth/login';
+  window.location.href = buildAppPath('/auth/login');
 };
 
 /**
  * 跳转到业务应用 B
  */
 const goToAppB = () => {
-  window.location.href = '/app-b/';
+  window.location.href = buildAppPath('/app-b/');
 };
 </script>
 
