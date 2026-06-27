@@ -10,6 +10,8 @@
 - **Monorepo 管理**：使用 pnpm workspace 统一管理多个项目
 - **代码复用**：共享工具包封装认证逻辑，避免重复实现
 - **样式统一**：全项目采用 Sass (SCSS) 样式预处理器，支持变量、嵌套、混合宏等特性
+- **GitHub Pages 支持**：一键部署到 GitHub Pages，支持自定义域名和子路径部署
+- **SPA History 模式**：通过根目录 404.html 实现 GitHub Pages 下的单页应用路由
 
 ## 📁 项目结构
 
@@ -259,7 +261,20 @@ VITE_API_URL=/api
 
 # 认证中心登录页地址
 VITE_AUTH_URL=/auth/login
+
+# 应用基础路径（由部署脚本自动注入）
+VITE_BASE_PATH=/auth/
+
+# 仓库名（由部署脚本自动注入，用于子路径部署）
+VITE_REPO_NAME=UniPortal
 ```
+
+| 变量 | 说明 | 示例 |
+|------|------|------|
+| `VITE_API_URL` | API 请求基础地址 | `/api` |
+| `VITE_AUTH_URL` | 认证中心登录页地址 | `/auth/login` |
+| `VITE_BASE_PATH` | 应用基础路径 | `/auth/`, `/app-a/` |
+| `VITE_REPO_NAME` | GitHub 仓库名，用于子路径构建 | `UniPortal` |
 
 ## 📦 共享包使用
 
@@ -326,9 +341,63 @@ server {
 }
 ```
 
+## 🚀 GitHub Pages 部署
+
+### 环境变量配置
+
+| 变量 | 说明 | 默认值 |
+|------|------|--------|
+| `REPO_NAME` | GitHub 仓库名，用于构建子路径（如 `/UniPortal`） | 空（根路径部署） |
+| `CUSTOM_DOMAIN` | 自定义域名（可选） | 空 |
+
+### CI/CD 配置
+
+项目已配置 GitHub Actions 自动部署，修改 `.github/workflows/deploy.yml`：
+
+```yaml
+env:
+  REPO_NAME: ${{ github.event.repository.name }}
+  # CUSTOM_DOMAIN: your-domain.com  # 如有自定义域名取消注释
+```
+
+### 手动部署
+
+```bash
+# 设置仓库名（子路径部署）
+REPO_NAME=UniPortal pnpm deploy
+
+# 根路径部署（域名根目录）
+pnpm deploy
+```
+
+### SPA History 模式支持
+
+GitHub Pages 默认不支持 SPA history 模式，项目通过根目录 `404.html` 实现路由重定向：
+
+1. 访问 `/UniPortal/auth/login?redirect_url=xxx` 时返回 404
+2. `404.html` 将完整 URL 存入 `sessionStorage`
+3. 重定向到应用根路径 `/UniPortal/auth/`
+4. 应用加载后读取 `sessionStorage` 并 `router.replace` 到目标路由
+
+### 部署路径结构
+
+```
+dist/
+├── auth/           # 认证中心
+├── app-a/          # 业务应用 A
+├── app-b/          # 业务应用 B
+├── 404.html        # SPA 路由重定向页面
+└── index.html      # 根路径重定向到认证中心
+```
+
 ## 📖 测试场景
 
 详细测试用例请参考 [docs/test-cases.md](./docs/test-cases.md)
+
+## 📚 文档
+
+- [快速部署手册](./docs/deployment-guide.md)
+- [多系统用户同步方案移植指南](./docs/migration-guide.md)
 
 ## 📄 许可证
 
