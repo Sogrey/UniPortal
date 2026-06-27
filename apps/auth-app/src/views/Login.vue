@@ -49,9 +49,9 @@ const handleLogin = async () => {
     if (redirectUrl) {
       window.location.href = redirectUrl;
     } else if (returnTo) {
-      router.push(returnTo);
+      router.replace(returnTo);
     } else {
-      router.push('/');
+      router.replace('/');
     }
   } catch {
     error.value = '登录失败，请重试';
@@ -69,7 +69,7 @@ onMounted(() => {
    */
   unlisten = authChannel.onMessage((msg) => {
     if (msg.action === AuthAction.LOGIN) {
-      router.push('/');
+      router.replace('/');
     }
   });
 });

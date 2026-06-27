@@ -14,13 +14,13 @@ const router = useRouter();
  */
 const { user, token, isAuthenticated } = useAuth({
   onLogin: () => {
-    router.push('/');
+    router.replace('/');
   },
   onLogout: () => {
-    router.push('/login');
+    router.replace('/login');
   },
   onSessionExpired: () => {
-    router.push('/login');
+    router.replace('/login');
   },
 });
 
