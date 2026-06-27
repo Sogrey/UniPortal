@@ -18,6 +18,7 @@ const DEPLOY_PATHS = {
 
 function buildApp(appName) {
   const appDir = path.join(rootDir, 'apps', appName);
+  const basePath = DEPLOY_PATHS[appName];
   console.log(`🔨 构建 ${appName}...`);
   
   try {
@@ -26,10 +27,12 @@ function buildApp(appName) {
       stdio: 'inherit',
       env: {
         ...process.env,
-        REPO_NAME
+        REPO_NAME,
+        VITE_REPO_NAME: REPO_NAME,
+        VITE_BASE_PATH: basePath
       }
     });
-    console.log(`✅ ${appName} 构建完成`);
+    console.log(`✅ ${appName} 构建完成 (REPO_NAME: "${REPO_NAME}", BASE_PATH: "${basePath}")`);
   } catch (error) {
     console.error(`❌ ${appName} 构建失败:`, error.message);
     process.exit(1);
