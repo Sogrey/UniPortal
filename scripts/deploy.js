@@ -61,6 +61,14 @@ function copyToDist(appName) {
     } else {
       execSync(`cp -r ${distDir}/* ${targetDir}`, { stdio: 'inherit' });
     }
+    
+    const indexHtml = path.join(targetDir, 'index.html');
+    const notFoundHtml = path.join(targetDir, '404.html');
+    if (fs.existsSync(indexHtml)) {
+      fs.copyFileSync(indexHtml, notFoundHtml);
+      console.log(`📄 生成 404.html（支持 SPA history 模式）`);
+    }
+    
     console.log(`✅ ${appName} 复制完成`);
     return true;
   } catch (error) {
